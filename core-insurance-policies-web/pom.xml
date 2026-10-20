@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-insurance-policies-web</artifactId>
+    <name>core-insurance-policies-web</name>
 
     <properties>
         <openapi.gen.skip>false</openapi.gen.skip>

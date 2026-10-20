@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-insurance-policies-core</artifactId>
+    <name>core-insurance-policies-core</name>
 
     <dependencies>
         <dependency>
