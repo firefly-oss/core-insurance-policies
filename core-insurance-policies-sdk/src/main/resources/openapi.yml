@@ -1,0 +1,3314 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:18080
+  description: Generated server url
+tags:
+- name: Liability Details
+  description: Exposure for a liability policy
+- name: Certificates of Insurance
+  description: "Certificate issued from a policy transaction, reissued when the cover\
+    \ changes"
+- name: Property Details
+  description: "Location and sums for a property policy, including home and commercial\
+    \ premises"
+- name: Health Details
+  description: Member cover on a health policy
+- name: Policy Status History
+  description: Status change recorded against a policy
+- name: Policies
+  description: Insurance policy master record
+- name: Motor Details
+  description: Vehicle and principal driver for a motor policy
+- name: Coverages
+  description: Coverage terms recorded against a policy transaction
+- name: Insured Objects
+  description: Risk object attached to a policy transaction
+- name: Policy Parties
+  description: Party role on a policy. The party itself is owned by customer management.
+- name: Life Details
+  description: Life assured and sum assured on a life policy
+- name: Policy Transactions
+  description: "New business, endorsement, renewal, cancellation, or reinstatement\
+    \ on a policy"
+paths:
+  /api/v1/policies/{policyId}:
+    get:
+      tags:
+      - Policies
+      summary: Get Policy by id
+      description: Retrieve one Policy
+      operationId: getPolicyById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Policy found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyDTO"
+        "404":
+          description: Policy not found
+    put:
+      tags:
+      - Policies
+      summary: Update Policy
+      description: Update an existing Policy
+      operationId: updatePolicy
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyDTO"
+        required: true
+      responses:
+        "200":
+          description: Policy updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: Policy not found
+    delete:
+      tags:
+      - Policies
+      summary: Delete Policy
+      description: Delete a Policy
+      operationId: deletePolicy
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Policy deleted
+        "404":
+          description: Policy not found
+  /api/v1/policies/{policyId}/transactions/{policyTransactionId}:
+    get:
+      tags:
+      - Policy Transactions
+      summary: Get PolicyTransaction by id
+      description: Retrieve one PolicyTransaction
+      operationId: getPolicyTransactionById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyTransactionId
+        in: path
+        description: Unique identifier of the PolicyTransaction
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: PolicyTransaction found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyTransactionDTO"
+        "404":
+          description: PolicyTransaction not found
+    put:
+      tags:
+      - Policy Transactions
+      summary: Update PolicyTransaction
+      description: Update an existing PolicyTransaction
+      operationId: updatePolicyTransaction
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyTransactionId
+        in: path
+        description: Unique identifier of the PolicyTransaction
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyTransactionDTO"
+        required: true
+      responses:
+        "200":
+          description: PolicyTransaction updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyTransactionDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: PolicyTransaction not found
+    delete:
+      tags:
+      - Policy Transactions
+      summary: Delete PolicyTransaction
+      description: Delete a PolicyTransaction
+      operationId: deletePolicyTransaction
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyTransactionId
+        in: path
+        description: Unique identifier of the PolicyTransaction
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: PolicyTransaction deleted
+        "404":
+          description: PolicyTransaction not found
+  /api/v1/policies/{policyId}/status-history/{policyStatusHistoryId}:
+    get:
+      tags:
+      - Policy Status History
+      summary: Get PolicyStatusHistory by id
+      description: Retrieve one PolicyStatusHistory
+      operationId: getPolicyStatusHistoryById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyStatusHistoryId
+        in: path
+        description: Unique identifier of the PolicyStatusHistory
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: PolicyStatusHistory found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        "404":
+          description: PolicyStatusHistory not found
+    put:
+      tags:
+      - Policy Status History
+      summary: Update PolicyStatusHistory
+      description: Update an existing PolicyStatusHistory
+      operationId: updatePolicyStatusHistory
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyStatusHistoryId
+        in: path
+        description: Unique identifier of the PolicyStatusHistory
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        required: true
+      responses:
+        "200":
+          description: PolicyStatusHistory updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: PolicyStatusHistory not found
+    delete:
+      tags:
+      - Policy Status History
+      summary: Delete PolicyStatusHistory
+      description: Delete a PolicyStatusHistory
+      operationId: deletePolicyStatusHistory
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyStatusHistoryId
+        in: path
+        description: Unique identifier of the PolicyStatusHistory
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: PolicyStatusHistory deleted
+        "404":
+          description: PolicyStatusHistory not found
+  /api/v1/policies/{policyId}/property-details/{propertyDetailId}:
+    get:
+      tags:
+      - Property Details
+      summary: Get PropertyDetail by id
+      description: Retrieve one PropertyDetail
+      operationId: getPropertyDetailById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: propertyDetailId
+        in: path
+        description: Unique identifier of the PropertyDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: PropertyDetail found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PropertyDetailDTO"
+        "404":
+          description: PropertyDetail not found
+    put:
+      tags:
+      - Property Details
+      summary: Update PropertyDetail
+      description: Update an existing PropertyDetail
+      operationId: updatePropertyDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: propertyDetailId
+        in: path
+        description: Unique identifier of the PropertyDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: PropertyDetail updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PropertyDetailDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: PropertyDetail not found
+    delete:
+      tags:
+      - Property Details
+      summary: Delete PropertyDetail
+      description: Delete a PropertyDetail
+      operationId: deletePropertyDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: propertyDetailId
+        in: path
+        description: Unique identifier of the PropertyDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: PropertyDetail deleted
+        "404":
+          description: PropertyDetail not found
+  /api/v1/policies/{policyId}/parties/{policyPartyId}:
+    get:
+      tags:
+      - Policy Parties
+      summary: Get PolicyParty by id
+      description: Retrieve one PolicyParty
+      operationId: getPolicyPartyById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyPartyId
+        in: path
+        description: Unique identifier of the PolicyParty
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: PolicyParty found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyPartyDTO"
+        "404":
+          description: PolicyParty not found
+    put:
+      tags:
+      - Policy Parties
+      summary: Update PolicyParty
+      description: Update an existing PolicyParty
+      operationId: updatePolicyParty
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyPartyId
+        in: path
+        description: Unique identifier of the PolicyParty
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyPartyDTO"
+        required: true
+      responses:
+        "200":
+          description: PolicyParty updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyPartyDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: PolicyParty not found
+    delete:
+      tags:
+      - Policy Parties
+      summary: Delete PolicyParty
+      description: Delete a PolicyParty
+      operationId: deletePolicyParty
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: policyPartyId
+        in: path
+        description: Unique identifier of the PolicyParty
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: PolicyParty deleted
+        "404":
+          description: PolicyParty not found
+  /api/v1/policies/{policyId}/motor-details/{motorDetailId}:
+    get:
+      tags:
+      - Motor Details
+      summary: Get MotorDetail by id
+      description: Retrieve one MotorDetail
+      operationId: getMotorDetailById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: motorDetailId
+        in: path
+        description: Unique identifier of the MotorDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: MotorDetail found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MotorDetailDTO"
+        "404":
+          description: MotorDetail not found
+    put:
+      tags:
+      - Motor Details
+      summary: Update MotorDetail
+      description: Update an existing MotorDetail
+      operationId: updateMotorDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: motorDetailId
+        in: path
+        description: Unique identifier of the MotorDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MotorDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: MotorDetail updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MotorDetailDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: MotorDetail not found
+    delete:
+      tags:
+      - Motor Details
+      summary: Delete MotorDetail
+      description: Delete a MotorDetail
+      operationId: deleteMotorDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: motorDetailId
+        in: path
+        description: Unique identifier of the MotorDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: MotorDetail deleted
+        "404":
+          description: MotorDetail not found
+  /api/v1/policies/{policyId}/life-details/{lifeDetailId}:
+    get:
+      tags:
+      - Life Details
+      summary: Get LifeDetail by id
+      description: Retrieve one LifeDetail
+      operationId: getLifeDetailById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: lifeDetailId
+        in: path
+        description: Unique identifier of the LifeDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: LifeDetail found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LifeDetailDTO"
+        "404":
+          description: LifeDetail not found
+    put:
+      tags:
+      - Life Details
+      summary: Update LifeDetail
+      description: Update an existing LifeDetail
+      operationId: updateLifeDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: lifeDetailId
+        in: path
+        description: Unique identifier of the LifeDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LifeDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: LifeDetail updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LifeDetailDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: LifeDetail not found
+    delete:
+      tags:
+      - Life Details
+      summary: Delete LifeDetail
+      description: Delete a LifeDetail
+      operationId: deleteLifeDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: lifeDetailId
+        in: path
+        description: Unique identifier of the LifeDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: LifeDetail deleted
+        "404":
+          description: LifeDetail not found
+  /api/v1/policies/{policyId}/liability-details/{liabilityDetailId}:
+    get:
+      tags:
+      - Liability Details
+      summary: Get LiabilityDetail by id
+      description: Retrieve one LiabilityDetail
+      operationId: getLiabilityDetailById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: liabilityDetailId
+        in: path
+        description: Unique identifier of the LiabilityDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: LiabilityDetail found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LiabilityDetailDTO"
+        "404":
+          description: LiabilityDetail not found
+    put:
+      tags:
+      - Liability Details
+      summary: Update LiabilityDetail
+      description: Update an existing LiabilityDetail
+      operationId: updateLiabilityDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: liabilityDetailId
+        in: path
+        description: Unique identifier of the LiabilityDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LiabilityDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: LiabilityDetail updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LiabilityDetailDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: LiabilityDetail not found
+    delete:
+      tags:
+      - Liability Details
+      summary: Delete LiabilityDetail
+      description: Delete a LiabilityDetail
+      operationId: deleteLiabilityDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: liabilityDetailId
+        in: path
+        description: Unique identifier of the LiabilityDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: LiabilityDetail deleted
+        "404":
+          description: LiabilityDetail not found
+  /api/v1/policies/{policyId}/insured-objects/{insuredObjectId}:
+    get:
+      tags:
+      - Insured Objects
+      summary: Get InsuredObject by id
+      description: Retrieve one InsuredObject
+      operationId: getInsuredObjectById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: insuredObjectId
+        in: path
+        description: Unique identifier of the InsuredObject
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: InsuredObject found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InsuredObjectDTO"
+        "404":
+          description: InsuredObject not found
+    put:
+      tags:
+      - Insured Objects
+      summary: Update InsuredObject
+      description: Update an existing InsuredObject
+      operationId: updateInsuredObject
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: insuredObjectId
+        in: path
+        description: Unique identifier of the InsuredObject
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsuredObjectDTO"
+        required: true
+      responses:
+        "200":
+          description: InsuredObject updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InsuredObjectDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: InsuredObject not found
+    delete:
+      tags:
+      - Insured Objects
+      summary: Delete InsuredObject
+      description: Delete a InsuredObject
+      operationId: deleteInsuredObject
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: insuredObjectId
+        in: path
+        description: Unique identifier of the InsuredObject
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: InsuredObject deleted
+        "404":
+          description: InsuredObject not found
+  /api/v1/policies/{policyId}/health-details/{healthDetailId}:
+    get:
+      tags:
+      - Health Details
+      summary: Get HealthDetail by id
+      description: Retrieve one HealthDetail
+      operationId: getHealthDetailById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: healthDetailId
+        in: path
+        description: Unique identifier of the HealthDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: HealthDetail found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HealthDetailDTO"
+        "404":
+          description: HealthDetail not found
+    put:
+      tags:
+      - Health Details
+      summary: Update HealthDetail
+      description: Update an existing HealthDetail
+      operationId: updateHealthDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: healthDetailId
+        in: path
+        description: Unique identifier of the HealthDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: HealthDetail updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HealthDetailDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: HealthDetail not found
+    delete:
+      tags:
+      - Health Details
+      summary: Delete HealthDetail
+      description: Delete a HealthDetail
+      operationId: deleteHealthDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: healthDetailId
+        in: path
+        description: Unique identifier of the HealthDetail
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: HealthDetail deleted
+        "404":
+          description: HealthDetail not found
+  /api/v1/policies/{policyId}/coverages/{coverageId}:
+    get:
+      tags:
+      - Coverages
+      summary: Get Coverage by id
+      description: Retrieve one Coverage
+      operationId: getCoverageById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: coverageId
+        in: path
+        description: Unique identifier of the Coverage
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Coverage found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CoverageDTO"
+        "404":
+          description: Coverage not found
+    put:
+      tags:
+      - Coverages
+      summary: Update Coverage
+      description: Update an existing Coverage
+      operationId: updateCoverage
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: coverageId
+        in: path
+        description: Unique identifier of the Coverage
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverageDTO"
+        required: true
+      responses:
+        "200":
+          description: Coverage updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CoverageDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: Coverage not found
+    delete:
+      tags:
+      - Coverages
+      summary: Delete Coverage
+      description: Delete a Coverage
+      operationId: deleteCoverage
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: coverageId
+        in: path
+        description: Unique identifier of the Coverage
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Coverage deleted
+        "404":
+          description: Coverage not found
+  /api/v1/policies/{policyId}/certificates/{certificateOfInsuranceId}:
+    get:
+      tags:
+      - Certificates of Insurance
+      summary: Get CertificateOfInsurance by id
+      description: Retrieve one CertificateOfInsurance
+      operationId: getCertificateOfInsuranceById
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: certificateOfInsuranceId
+        in: path
+        description: Unique identifier of the CertificateOfInsurance
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: CertificateOfInsurance found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        "404":
+          description: CertificateOfInsurance not found
+    put:
+      tags:
+      - Certificates of Insurance
+      summary: Update CertificateOfInsurance
+      description: Update an existing CertificateOfInsurance
+      operationId: updateCertificateOfInsurance
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: certificateOfInsuranceId
+        in: path
+        description: Unique identifier of the CertificateOfInsurance
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        required: true
+      responses:
+        "200":
+          description: CertificateOfInsurance updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        "400":
+          description: Invalid data
+        "404":
+          description: CertificateOfInsurance not found
+    delete:
+      tags:
+      - Certificates of Insurance
+      summary: Delete CertificateOfInsurance
+      description: Delete a CertificateOfInsurance
+      operationId: deleteCertificateOfInsurance
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: certificateOfInsuranceId
+        in: path
+        description: Unique identifier of the CertificateOfInsurance
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: CertificateOfInsurance deleted
+        "404":
+          description: CertificateOfInsurance not found
+  /api/v1/policies:
+    post:
+      tags:
+      - Policies
+      summary: Create Policy
+      description: Create a Policy
+      operationId: createPolicy
+      parameters:
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyDTO"
+        required: true
+      responses:
+        "201":
+          description: Policy created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/transactions:
+    post:
+      tags:
+      - Policy Transactions
+      summary: Create PolicyTransaction
+      description: Create a PolicyTransaction
+      operationId: createPolicyTransaction
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyTransactionDTO"
+        required: true
+      responses:
+        "201":
+          description: PolicyTransaction created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyTransactionDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/transactions/filter:
+    post:
+      tags:
+      - Policy Transactions
+      summary: Filter policyTransactions
+      description: Retrieve a page of policyTransactions matching the filter
+      operationId: filterPolicyTransactions
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPolicyTransactionDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePolicyTransactionDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/status-history:
+    post:
+      tags:
+      - Policy Status History
+      summary: Create PolicyStatusHistory
+      description: Create a PolicyStatusHistory
+      operationId: createPolicyStatusHistory
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        required: true
+      responses:
+        "201":
+          description: PolicyStatusHistory created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/status-history/filter:
+    post:
+      tags:
+      - Policy Status History
+      summary: Filter policyStatusHistories
+      description: Retrieve a page of policyStatusHistories matching the filter
+      operationId: filterPolicyStatusHistories
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPolicyStatusHistoryDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePolicyStatusHistoryDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/property-details:
+    post:
+      tags:
+      - Property Details
+      summary: Create PropertyDetail
+      description: Create a PropertyDetail
+      operationId: createPropertyDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyDetailDTO"
+        required: true
+      responses:
+        "201":
+          description: PropertyDetail created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PropertyDetailDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/property-details/filter:
+    post:
+      tags:
+      - Property Details
+      summary: Filter propertyDetails
+      description: Retrieve a page of propertyDetails matching the filter
+      operationId: filterPropertyDetails
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPropertyDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePropertyDetailDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/parties:
+    post:
+      tags:
+      - Policy Parties
+      summary: Create PolicyParty
+      description: Create a PolicyParty
+      operationId: createPolicyParty
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyPartyDTO"
+        required: true
+      responses:
+        "201":
+          description: PolicyParty created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PolicyPartyDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/parties/filter:
+    post:
+      tags:
+      - Policy Parties
+      summary: Filter policyParties
+      description: Retrieve a page of policyParties matching the filter
+      operationId: filterPolicyParties
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPolicyPartyDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePolicyPartyDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/motor-details:
+    post:
+      tags:
+      - Motor Details
+      summary: Create MotorDetail
+      description: Create a MotorDetail
+      operationId: createMotorDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MotorDetailDTO"
+        required: true
+      responses:
+        "201":
+          description: MotorDetail created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MotorDetailDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/motor-details/filter:
+    post:
+      tags:
+      - Motor Details
+      summary: Filter motorDetails
+      description: Retrieve a page of motorDetails matching the filter
+      operationId: filterMotorDetails
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestMotorDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseMotorDetailDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/life-details:
+    post:
+      tags:
+      - Life Details
+      summary: Create LifeDetail
+      description: Create a LifeDetail
+      operationId: createLifeDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LifeDetailDTO"
+        required: true
+      responses:
+        "201":
+          description: LifeDetail created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LifeDetailDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/life-details/filter:
+    post:
+      tags:
+      - Life Details
+      summary: Filter lifeDetails
+      description: Retrieve a page of lifeDetails matching the filter
+      operationId: filterLifeDetails
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestLifeDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseLifeDetailDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/liability-details:
+    post:
+      tags:
+      - Liability Details
+      summary: Create LiabilityDetail
+      description: Create a LiabilityDetail
+      operationId: createLiabilityDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LiabilityDetailDTO"
+        required: true
+      responses:
+        "201":
+          description: LiabilityDetail created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LiabilityDetailDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/liability-details/filter:
+    post:
+      tags:
+      - Liability Details
+      summary: Filter liabilityDetails
+      description: Retrieve a page of liabilityDetails matching the filter
+      operationId: filterLiabilityDetails
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestLiabilityDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseLiabilityDetailDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/insured-objects:
+    post:
+      tags:
+      - Insured Objects
+      summary: Create InsuredObject
+      description: Create a InsuredObject
+      operationId: createInsuredObject
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsuredObjectDTO"
+        required: true
+      responses:
+        "201":
+          description: InsuredObject created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InsuredObjectDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/insured-objects/filter:
+    post:
+      tags:
+      - Insured Objects
+      summary: Filter insuredObjects
+      description: Retrieve a page of insuredObjects matching the filter
+      operationId: filterInsuredObjects
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestInsuredObjectDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseInsuredObjectDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/health-details:
+    post:
+      tags:
+      - Health Details
+      summary: Create HealthDetail
+      description: Create a HealthDetail
+      operationId: createHealthDetail
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthDetailDTO"
+        required: true
+      responses:
+        "201":
+          description: HealthDetail created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HealthDetailDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/health-details/filter:
+    post:
+      tags:
+      - Health Details
+      summary: Filter healthDetails
+      description: Retrieve a page of healthDetails matching the filter
+      operationId: filterHealthDetails
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestHealthDetailDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseHealthDetailDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/coverages:
+    post:
+      tags:
+      - Coverages
+      summary: Create Coverage
+      description: Create a Coverage
+      operationId: createCoverage
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoverageDTO"
+        required: true
+      responses:
+        "201":
+          description: Coverage created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CoverageDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/coverages/filter:
+    post:
+      tags:
+      - Coverages
+      summary: Filter coverages
+      description: Retrieve a page of coverages matching the filter
+      operationId: filterCoverages
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestCoverageDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseCoverageDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/{policyId}/certificates:
+    post:
+      tags:
+      - Certificates of Insurance
+      summary: Create CertificateOfInsurance
+      description: Create a CertificateOfInsurance
+      operationId: createCertificateOfInsurance
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        required: true
+      responses:
+        "201":
+          description: CertificateOfInsurance created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        "400":
+          description: Invalid data
+  /api/v1/policies/{policyId}/certificates/filter:
+    post:
+      tags:
+      - Certificates of Insurance
+      summary: Filter certificatesOfInsurance
+      description: Retrieve a page of certificatesOfInsurance matching the filter
+      operationId: filterCertificatesOfInsurance
+      parameters:
+      - name: policyId
+        in: path
+        description: Unique identifier of the Policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestCertificateOfInsuranceDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseCertificateOfInsuranceDTO"
+        "400":
+          description: Invalid filter request
+  /api/v1/policies/filter:
+    post:
+      tags:
+      - Policies
+      summary: Filter policies
+      description: Retrieve a page of policies matching the filter
+      operationId: filterPolicies
+      parameters:
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPolicyDTO"
+        required: true
+      responses:
+        "200":
+          description: Page of matching records
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePolicyDTO"
+        "400":
+          description: Invalid filter request
+components:
+  schemas:
+    PolicyDTO:
+      required:
+      - contractId
+      - inceptionDate
+      - lineOfBusiness
+      - policyNumber
+      - policyStatus
+      - productId
+      - tenantId
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+          readOnly: true
+        tenantId:
+          type: string
+          format: uuid
+        contractId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        policyNumber:
+          maxLength: 64
+          minLength: 0
+          type: string
+        lineOfBusiness:
+          type: string
+          enum:
+          - MOTOR
+          - PROPERTY
+          - LIABILITY
+          - LIFE
+          - HEALTH
+          - MARINE
+          - AVIATION
+          - ACCIDENT
+          - OTHER
+        policyStatus:
+          type: string
+          enum:
+          - QUOTE
+          - BOUND
+          - IN_FORCE
+          - LAPSED
+          - CANCELLED
+          - EXPIRED
+        currency:
+          pattern: "[A-Z]{3}"
+          type: string
+        inceptionDate:
+          type: string
+          format: date
+        expiryDate:
+          type: string
+          format: date
+        renewalDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PolicyTransactionDTO:
+      required:
+      - effectiveDate
+      - policyId
+      - sequenceNumber
+      - transactionNumber
+      - transactionStatus
+      - transactionType
+      type: object
+      properties:
+        policyTransactionId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        transactionNumber:
+          maxLength: 64
+          minLength: 0
+          type: string
+        transactionType:
+          type: string
+          enum:
+          - NEW_BUSINESS
+          - ENDORSEMENT
+          - RENEWAL
+          - CANCELLATION
+          - REINSTATEMENT
+        transactionStatus:
+          type: string
+          enum:
+          - DRAFT
+          - QUOTED
+          - BOUND
+          - ISSUED
+          - REVERSED
+        effectiveDate:
+          type: string
+          format: date
+        expiryDate:
+          type: string
+          format: date
+        sequenceNumber:
+          type: integer
+          format: int32
+        outOfSequence:
+          type: boolean
+        noticeDays:
+          type: integer
+          format: int32
+        reason:
+          maxLength: 4000
+          minLength: 0
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PolicyStatusHistoryDTO:
+      required:
+      - changedAt
+      - policyId
+      - policyStatus
+      type: object
+      properties:
+        policyStatusHistoryId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        policyStatus:
+          type: string
+          enum:
+          - QUOTE
+          - BOUND
+          - IN_FORCE
+          - LAPSED
+          - CANCELLED
+          - EXPIRED
+        statusReason:
+          maxLength: 500
+          minLength: 0
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PropertyDetailDTO:
+      required:
+      - insuredObjectId
+      - policyId
+      type: object
+      properties:
+        propertyDetailId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        insuredObjectId:
+          type: string
+          format: uuid
+        occupancy:
+          maxLength: 128
+          minLength: 0
+          type: string
+        construction:
+          maxLength: 128
+          minLength: 0
+          type: string
+        yearBuilt:
+          type: integer
+          format: int32
+        addressLine:
+          maxLength: 255
+          minLength: 0
+          type: string
+        city:
+          maxLength: 100
+          minLength: 0
+          type: string
+        postalCode:
+          maxLength: 20
+          minLength: 0
+          type: string
+        countryCode:
+          maxLength: 2
+          minLength: 0
+          type: string
+        buildingsSum:
+          type: number
+        contentsSum:
+          type: number
+        currency:
+          pattern: "[A-Z]{3}"
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PolicyPartyDTO:
+      required:
+      - partyId
+      - policyId
+      - role
+      type: object
+      properties:
+        policyPartyId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        partyId:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+          - POLICYHOLDER
+          - NAMED_INSURED
+          - BENEFICIARY
+          - PAYOR
+          - BROKER
+          - AGENT
+          - LOSS_PAYEE
+        effectiveFrom:
+          type: string
+          format: date
+        effectiveTo:
+          type: string
+          format: date
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    MotorDetailDTO:
+      required:
+      - insuredObjectId
+      - policyId
+      - vehicleUse
+      type: object
+      properties:
+        motorDetailId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        insuredObjectId:
+          type: string
+          format: uuid
+        vehicleIdentifier:
+          maxLength: 64
+          minLength: 0
+          type: string
+        make:
+          maxLength: 64
+          minLength: 0
+          type: string
+        model:
+          maxLength: 64
+          minLength: 0
+          type: string
+        modelYear:
+          type: integer
+          format: int32
+        vehicleUse:
+          type: string
+          enum:
+          - PRIVATE
+          - COMMERCIAL
+          - FLEET
+        driverPartyId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    LifeDetailDTO:
+      required:
+      - insuredObjectId
+      - lifeAssuredPartyId
+      - policyId
+      - sumAssured
+      type: object
+      properties:
+        lifeDetailId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        insuredObjectId:
+          type: string
+          format: uuid
+        lifeAssuredPartyId:
+          type: string
+          format: uuid
+        sumAssured:
+          type: number
+        termYears:
+          type: integer
+          format: int32
+        currency:
+          pattern: "[A-Z]{3}"
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    LiabilityDetailDTO:
+      required:
+      - exposureBasis
+      - insuredObjectId
+      - policyId
+      type: object
+      properties:
+        liabilityDetailId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        insuredObjectId:
+          type: string
+          format: uuid
+        exposureBasis:
+          type: string
+          enum:
+          - TURNOVER
+          - PAYROLL
+          - UNITS
+          - OTHER
+        exposureAmount:
+          type: number
+        territory:
+          maxLength: 128
+          minLength: 0
+          type: string
+        currency:
+          pattern: "[A-Z]{3}"
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    InsuredObjectDTO:
+      required:
+      - objectType
+      - policyId
+      - policyTransactionId
+      type: object
+      properties:
+        insuredObjectId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        policyTransactionId:
+          type: string
+          format: uuid
+        objectType:
+          type: string
+          enum:
+          - PERSON
+          - VEHICLE
+          - PROPERTY
+          - VESSEL
+          - AIRCRAFT
+          - LIABILITY
+          - OTHER
+        partyId:
+          type: string
+          format: uuid
+        description:
+          maxLength: 4000
+          minLength: 0
+          type: string
+        identifier:
+          maxLength: 128
+          minLength: 0
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    HealthDetailDTO:
+      required:
+      - coverStart
+      - insuredObjectId
+      - memberPartyId
+      - planCode
+      - policyId
+      type: object
+      properties:
+        healthDetailId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        insuredObjectId:
+          type: string
+          format: uuid
+        memberPartyId:
+          type: string
+          format: uuid
+        planCode:
+          maxLength: 64
+          minLength: 0
+          type: string
+        coverStart:
+          type: string
+          format: date
+        coverEnd:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CoverageDTO:
+      required:
+      - coverageCode
+      - policyId
+      - policyTransactionId
+      type: object
+      properties:
+        coverageId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        policyTransactionId:
+          type: string
+          format: uuid
+        coverageCode:
+          maxLength: 64
+          minLength: 0
+          type: string
+        coverageName:
+          maxLength: 255
+          minLength: 0
+          type: string
+        limitAmount:
+          type: number
+        deductibleAmount:
+          type: number
+        currency:
+          pattern: "[A-Z]{3}"
+          type: string
+        premiumAmount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CertificateOfInsuranceDTO:
+      required:
+      - certificateNumber
+      - certificateStatus
+      - holderPartyId
+      - issuedAt
+      - policyId
+      - policyTransactionId
+      type: object
+      properties:
+        certificateOfInsuranceId:
+          type: string
+          format: uuid
+          readOnly: true
+        policyId:
+          type: string
+          format: uuid
+        certificateNumber:
+          maxLength: 64
+          minLength: 0
+          type: string
+        policyTransactionId:
+          type: string
+          format: uuid
+        holderPartyId:
+          type: string
+          format: uuid
+        certificateStatus:
+          type: string
+          enum:
+          - ISSUED
+          - SUPERSEDED
+          - REVOKED
+        issuedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    FilterOptions:
+      type: object
+      properties:
+        caseInsensitiveStrings:
+          type: boolean
+        includeInheritedFields:
+          type: boolean
+      description: Filter options for customizing filter behavior
+    FilterRequestPolicyTransactionDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PolicyTransactionDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationRequest:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: The zero-based page number to retrieve.
+          format: int32
+          example: 0
+          default: 0
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+          example: 10
+          default: 10
+        sortBy:
+          type: string
+          description: The field to sort the results by.
+          example: name
+        sortDirection:
+          type: string
+          description: "The direction of sorting, either ASC or DESC."
+          example: DESC
+          default: DESC
+      description: "Represents a pagination request for retrieving paginated results,\
+        \ including page number, size, sort field, and direction."
+    RangeFilter:
+      type: object
+      properties:
+        ranges:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/RangeObject"
+          description: Map of field names to their range criteria
+      description: Represents range filters for numeric fields
+    RangeObject:
+      type: object
+      properties:
+        from:
+          type: object
+          description: Start value of the range
+        to:
+          type: object
+          description: End value of the range
+      description: Represents a range with from and to values
+    PaginationResponsePolicyTransactionDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PolicyTransactionDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestPolicyStatusHistoryDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponsePolicyStatusHistoryDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PolicyStatusHistoryDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestPropertyDetailDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PropertyDetailDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponsePropertyDetailDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PropertyDetailDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestPolicyPartyDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PolicyPartyDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponsePolicyPartyDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PolicyPartyDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestMotorDetailDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/MotorDetailDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseMotorDetailDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/MotorDetailDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestLifeDetailDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/LifeDetailDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseLifeDetailDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/LifeDetailDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestLiabilityDetailDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/LiabilityDetailDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseLiabilityDetailDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/LiabilityDetailDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestInsuredObjectDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/InsuredObjectDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseInsuredObjectDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/InsuredObjectDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestHealthDetailDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/HealthDetailDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseHealthDetailDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/HealthDetailDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestCoverageDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/CoverageDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseCoverageDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/CoverageDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestCertificateOfInsuranceDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponseCertificateOfInsuranceDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/CertificateOfInsuranceDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
+    FilterRequestPolicyDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PolicyDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Filter criteria
+    PaginationResponsePolicyDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PolicyDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.

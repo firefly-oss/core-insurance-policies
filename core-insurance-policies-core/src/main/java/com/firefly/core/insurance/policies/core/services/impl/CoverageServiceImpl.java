@@ -1,0 +1,107 @@
+/*
+ * Copyright 2026 Firefly Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package com.firefly.core.insurance.policies.core.services.impl;
+
+import org.fireflyframework.core.filters.FilterRequest;
+import org.fireflyframework.core.filters.FilterUtils;
+import org.fireflyframework.core.queries.PaginationResponse;
+import org.fireflyframework.web.error.exceptions.ResourceNotFoundException;
+import com.firefly.core.insurance.policies.core.mappers.CoverageMapper;
+import com.firefly.core.insurance.policies.core.services.CoverageService;
+import com.firefly.core.insurance.policies.interfaces.dtos.CoverageDTO;
+import com.firefly.core.insurance.policies.models.entities.Coverage;
+import com.firefly.core.insurance.policies.models.repositories.CoverageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+
+@Service
+@Transactional
+public class CoverageServiceImpl implements CoverageService {
+
+    @Autowired
+    private CoverageRepository repository;
+
+    @Autowired
+    private CoverageMapper mapper;
+
+    @Override
+    public Mono<PaginationResponse<CoverageDTO>> filterCoverages(UUID policyId, FilterRequest<CoverageDTO> filterRequest) {
+        if (filterRequest.getFilters() == null) {
+            filterRequest.setFilters(new CoverageDTO());
+        }
+        filterRequest.getFilters().setPolicyId(policyId);
+        return FilterUtils.createFilter(Coverage.class, mapper::toDTO).filter(filterRequest);
+    }
+
+    @Override
+    public Mono<CoverageDTO> createCoverage(UUID policyId, CoverageDTO dto) {
+        return Mono.just(dto)
+                .doOnNext(value -> value.setPolicyId(policyId))
+                .map(mapper::toEntity)
+                .flatMap(repository::save)
+                .map(mapper::toDTO);
+    }
+
+    @Override
+    public Mono<CoverageDTO> updateCoverage(UUID policyId, UUID coverageId, CoverageDTO dto) {
+        return repository.findById(coverageId)
+                .switchIfEmpty(Mono.error(ResourceNotFoundException.forResource("Coverage", coverageId.toString())))
+                .flatMap(existing -> {
+                    if (!policyId.equals(existing.getPolicyId())) {
+                        return Mono.error(ResourceNotFoundException.withReason(
+                                "RESOURCE_SCOPE_MISMATCH",
+                                "Coverage with id '" + coverageId + "' does not belong to policy '" + policyId + "'"));
+                    }
+                    mapper.updateEntityFromDto(dto, existing);
+                    return repository.save(existing);
+                })
+                .map(mapper::toDTO);
+    }
+
+    @Override
+    public Mono<Void> deleteCoverage(UUID policyId, UUID coverageId) {
+        return repository.findById(coverageId)
+                .switchIfEmpty(Mono.error(ResourceNotFoundException.forResource("Coverage", coverageId.toString())))
+                .flatMap(existing -> {
+                    if (!policyId.equals(existing.getPolicyId())) {
+                        return Mono.error(ResourceNotFoundException.withReason(
+                                "RESOURCE_SCOPE_MISMATCH",
+                                "Coverage with id '" + coverageId + "' does not belong to policy '" + policyId + "'"));
+                    }
+                    return repository.deleteById(coverageId);
+                });
+    }
+
+    @Override
+    public Mono<CoverageDTO> getCoverageById(UUID policyId, UUID coverageId) {
+        return repository.findById(coverageId)
+                .switchIfEmpty(Mono.error(ResourceNotFoundException.forResource("Coverage", coverageId.toString())))
+                .flatMap(existing -> {
+                    if (!policyId.equals(existing.getPolicyId())) {
+                        return Mono.error(ResourceNotFoundException.withReason(
+                                "RESOURCE_SCOPE_MISMATCH",
+                                "Coverage with id '" + coverageId + "' does not belong to policy '" + policyId + "'"));
+                    }
+                    return Mono.just(mapper.toDTO(existing));
+                });
+    }
+}
