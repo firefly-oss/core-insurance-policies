@@ -1,9 +1,9 @@
 <a href="https://fireflysoftware.io/openplatform/">
 <picture>
-  <source media="(max-width: 640px) and (prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-narrow-dark.svg">
-  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-narrow-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-dark.svg">
-  <img src="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-light.svg" alt="Firefly OpenPlatform - Core Insurance - Policies" width="100%">
+  <source media="(max-width: 640px) and (prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-narrow-dark.svg">
+  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-narrow-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-dark.svg">
+  <img src="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-light.svg" alt="Firefly OpenPlatform - Core Insurance - Policies" width="100%">
 </picture>
 </a>
 
@@ -17,13 +17,15 @@ Core repository for insurance policy records: the policy, its parties, transacti
 
 Repository: [https://github.com/firefly-oss/core-insurance-policies](https://github.com/firefly-oss/core-insurance-policies)
 
-Persists the policy lifecycle as records. Parties stay in customer management, agreements stay in contract management, and products stay in the product catalogue. Rating and payment execution stay outside this service.
+Persists the policy lifecycle as records. Parties stay in customer management, agreements stay in contract management, and products stay in the product catalog. Rating and payment execution stay outside this service.
 
-This is a **core** service. It owns its tables and exposes a reactive CRUD API. It does not call other core services. Domain orchestration is intentionally not in this repository.
+This is a **core** service. It owns its tables and exposes a reactive API. It does not call other core services. Domain orchestration is intentionally not in this repository.
+
+A policy follows an explicit status lifecycle. `QUOTE` may become `BOUND` or `CANCELLED`. `BOUND` may become `IN_FORCE` or `CANCELLED`. `IN_FORCE` may become `LAPSED`, `CANCELLED`, or `EXPIRED`. `LAPSED` may return to `IN_FORCE` or become `CANCELLED` or `EXPIRED`. `CANCELLED` and `EXPIRED` stay on file. Only a `QUOTE` can be removed.
 
 ## What it does not own
 
-- People and organisations. Those are parties in core-common-customer-mgmt.
+- People and organizations. Those are parties in core-common-customer-mgmt.
 - The commercial agreement. That is a contract in core-common-contract-mgmt, stored here as contractId.
 - Product definitions and rating. The product id points at core-common-product-mgmt. Premium figures on a coverage are recorded amounts, not a rating result.
 - Premium collection and indemnity payout. Those payment orders live in core-banking-payments.
@@ -192,7 +194,7 @@ Fields that point at another Firefly service are logical references. Foreign key
 | POST | `/api/v1/policies` | Create a Policy |
 | GET | `/api/v1/policies/{policyId}` | Get a Policy |
 | PUT | `/api/v1/policies/{policyId}` | Update a Policy |
-| DELETE | `/api/v1/policies/{policyId}` | Delete a Policy |
+| DELETE | `/api/v1/policies/{policyId}` | Delete a quote. An in-force policy stays on file |
 | POST | `/api/v1/policies/{policyId}/parties/filter` | Filter policyparties |
 | POST | `/api/v1/policies/{policyId}/parties` | Create a PolicyParty |
 | GET | `/api/v1/policies/{policyId}/parties/{policyPartyId}` | Get a PolicyParty |
