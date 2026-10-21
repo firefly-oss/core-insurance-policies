@@ -24,6 +24,7 @@ import org.fireflyframework.web.error.exceptions.ResourceNotFoundException;
 import io.fireflysoftware.core.insurance.policies.core.mappers.PolicyMapper;
 import io.fireflysoftware.core.insurance.policies.core.services.PolicyService;
 import io.fireflysoftware.core.insurance.policies.interfaces.dtos.PolicyDTO;
+import io.fireflysoftware.core.insurance.policies.interfaces.enums.PolicyStatus;
 import io.fireflysoftware.core.insurance.policies.models.entities.Policy;
 import io.fireflysoftware.core.insurance.policies.models.repositories.PolicyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,11 @@ public class PolicyServiceImpl implements PolicyService {
     public Mono<PolicyDTO> createPolicy(PolicyDTO dto) {
         return Mono.just(dto)
                 .map(mapper::toEntity)
+                .doOnNext(entity -> {
+                    if (entity.getPolicyStatus() == null) {
+                        entity.setPolicyStatus(PolicyStatus.QUOTE);
+                    }
+                })
                 .flatMap(repository::save)
                 .map(mapper::toDTO);
     }
@@ -61,8 +67,19 @@ public class PolicyServiceImpl implements PolicyService {
         return repository.findById(policyId)
                 .switchIfEmpty(Mono.error(ResourceNotFoundException.forResource("Policy", policyId.toString())))
                 .flatMap(existing -> {
+                    PolicyStatus current = existing.getPolicyStatus() != null
+                            ? existing.getPolicyStatus()
+                            : PolicyStatus.QUOTE;
                     mapper.updateEntityFromDto(dto, existing);
                     existing.setPolicyId(policyId);
+                    PolicyStatus next = existing.getPolicyStatus() != null
+                            ? existing.getPolicyStatus()
+                            : current;
+                    if (!PolicyLifecycle.canTransition(current, next)) {
+                        return Mono.error(new IllegalStateException(
+                                "Policy " + policyId + " cannot move from " + current + " to " + next));
+                    }
+                    existing.setPolicyStatus(next);
                     return repository.save(existing);
                 })
                 .map(mapper::toDTO);
@@ -72,7 +89,17 @@ public class PolicyServiceImpl implements PolicyService {
     public Mono<Void> deletePolicy(UUID policyId) {
         return repository.findById(policyId)
                 .switchIfEmpty(Mono.error(ResourceNotFoundException.forResource("Policy", policyId.toString())))
-                .flatMap(existing -> repository.deleteById(policyId));
+                .flatMap(existing -> {
+                    PolicyStatus status = existing.getPolicyStatus() != null
+                            ? existing.getPolicyStatus()
+                            : PolicyStatus.QUOTE;
+                    if (status != PolicyStatus.QUOTE) {
+                        return Mono.error(new IllegalStateException(
+                                "Policy " + policyId + " is " + status
+                                        + " and cannot be deleted; cancel or lapse it so the policy history is kept"));
+                    }
+                    return repository.deleteById(policyId);
+                });
     }
 
     @Override
